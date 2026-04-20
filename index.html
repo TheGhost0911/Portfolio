@@ -818,14 +818,21 @@ footer {
   const cursor = document.querySelector('.cursor');
   const cursorDot = document.querySelector('.cursor-dot');
   const cursorRing = document.querySelector('.cursor-ring');
+  const sparklesContainer = document.querySelector('.sparkles');
   let mouseX = 0, mouseY = 0;
   let prevMouseX = 0, prevMouseY = 0;
   let dotX = 0, dotY = 0;
   let ringX = 0, ringY = 0;
   let trail = [];
   const trailLength = 10;
+  const isTouchDevice = 'ontouchstart' in window;
+
+  if (isTouchDevice) {
+    cursor.style.display = 'none';
+  }
 
   document.addEventListener('mousemove', (e) => {
+    if (isTouchDevice) return;
     mouseX = e.clientX;
     mouseY = e.clientY;
     if (Math.abs(mouseX - prevMouseX) > 1 || Math.abs(mouseY - prevMouseY) > 1) {
@@ -839,27 +846,56 @@ footer {
     }
   });
 
+  // Touch events for sparkles
+  document.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    mouseX = touch.clientX;
+    mouseY = touch.clientY;
+    trail.unshift({x: mouseX, y: mouseY});
+    if (trail.length > trailLength) trail.pop();
+    for (let i = 0; i < 5; i++) createSparkle();
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    mouseX = touch.clientX;
+    mouseY = touch.clientY;
+    trail.unshift({x: mouseX, y: mouseY});
+    if (trail.length > trailLength) trail.pop();
+    createSparkle();
+    createSparkle();
+  });
+
+  document.addEventListener('touchend', (e) => {
+    // Optional: create sparkles on touch end
+    for (let i = 0; i < 3; i++) createSparkle();
+  });
+
   function updateCursor() {
-    dotX += (mouseX - dotX) * 0.2;
-    dotY += (mouseY - dotY) * 0.2;
-    ringX += (mouseX - ringX) * 0.1;
-    ringY += (mouseY - ringY) * 0.1;
-    cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
-    cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    if (!isTouchDevice) {
+      dotX += (mouseX - dotX) * 0.2;
+      dotY += (mouseY - dotY) * 0.2;
+      ringX += (mouseX - ringX) * 0.1;
+      ringY += (mouseY - ringY) * 0.1;
+      cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    }
     requestAnimationFrame(updateCursor);
   }
   updateCursor();
 
   // Cursor hover effects
-  const interactiveElements = document.querySelectorAll('a, button, .reel-frame, .work-item, .service-card, .stat-card, .testimonial, .contact-item, .form-field input, .form-field textarea, .form-field select');
-  interactiveElements.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursorRing.classList.add('hover');
+  if (!isTouchDevice) {
+    const interactiveElements = document.querySelectorAll('a, button, .reel-frame, .work-item, .service-card, .stat-card, .testimonial, .contact-item, .form-field input, .form-field textarea, .form-field select');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorRing.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorRing.classList.remove('hover');
+      });
     });
-    el.addEventListener('mouseleave', () => {
-      cursorRing.classList.remove('hover');
-    });
-  });
+  }
 
   // Sparkles
   const sparkles = document.querySelectorAll('.sparkle');
