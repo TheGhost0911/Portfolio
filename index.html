@@ -32,6 +32,78 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  transition: transform 0.05s ease-out;
+}
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+  opacity: 0.5;
+}
+.cursor-ring.hover {
+  transform: scale(1.5);
+  opacity: 0.8;
+}
+
+/* ── SPARKLES ── */
+.sparkles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+.sparkle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 4px var(--accent);
+  animation: sparkle 0.4s ease-out forwards;
+}
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1) rotate(120deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.2) rotate(240deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
 }
 
 /* ── LIQUID GLASS ── */
@@ -46,6 +118,15 @@ body {
     0 1px 0 rgba(255,255,255,0.06) inset;
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.04) inset,
+    0 12px 40px var(--glass-shadow),
+    0 1px 0 rgba(255,255,255,0.06) inset;
+  border-color: rgba(200,169,110,0.2);
 }
 .glass::before {
   content: '';
@@ -294,7 +375,8 @@ section { padding: 80px 24px; }
 
 /* ── STATS ── */
 .stats-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; padding: 0 24px 80px; }
-.stat-card { padding: 28px 20px; border-radius: 16px; text-align: center; }
+.stat-card { padding: 28px 20px; border-radius: 16px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.stat-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px var(--glass-shadow); }
 .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--white); line-height: 1; }
 .stat-num span { color: var(--accent); }
 .stat-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
@@ -322,7 +404,8 @@ section { padding: 80px 24px; }
 
 /* ── TESTIMONIALS ── */
 .testimonials-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.testimonial { padding: 32px 28px; border-radius: 16px; }
+.testimonial { padding: 32px 28px; border-radius: 16px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.testimonial:hover { transform: translateY(-4px); box-shadow: 0 8px 24px var(--glass-shadow); }
 .quote-mark { font-family: 'Playfair Display', serif; font-size: 60px; color: var(--accent); line-height: 0.6; opacity: 0.3; margin-bottom: 16px; display: block; }
 .testimonial-text { font-size: 13px; line-height: 1.9; color: var(--silver); font-style: italic; margin-bottom: 24px; }
 .testimonial-author { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
@@ -338,7 +421,9 @@ section { padding: 80px 24px; }
   display: flex; align-items: flex-start; gap: 16px;
   padding: 14px 16px; border-radius: 10px;
   background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
 }
+.contact-item:hover { transform: translateY(-2px); background: rgba(255,255,255,0.04); border-color: var(--dim); }
 .ci-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); width: 72px; flex-shrink: 0; padding-top: 2px; }
 .ci-val { font-size: 13px; color: var(--white); }
 
@@ -353,8 +438,15 @@ section { padding: 80px 24px; }
   border-radius: 8px; color: var(--white);
   padding: 13px 16px;
   font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300;
-  outline: none; transition: border-color 0.3s, background 0.3s;
+  outline: none; transition: border-color 0.3s, background 0.3s, transform 0.2s;
   resize: none; -webkit-appearance: none; appearance: none;
+}
+.form-field input:hover,
+.form-field textarea:hover,
+.form-field select:hover {
+  border-color: rgba(200,169,110,0.3);
+  background: rgba(200,169,110,0.02);
+  transform: translateY(-1px);
 }
 .form-field input:focus,
 .form-field textarea:focus,
@@ -423,6 +515,65 @@ footer {
 </style>
 </head>
 <body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor">
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+</div>
+<div class="sparkles">
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+  <div class="sparkle"></div>
+</div>
 
 <!-- NAV -->
 <nav class="glass">
@@ -662,6 +813,72 @@ footer {
     });
   }, { threshold: 0.08 });
   reveals.forEach(el => observer.observe(el));
+
+  // Custom Cursor
+  const cursor = document.querySelector('.cursor');
+  const cursorDot = document.querySelector('.cursor-dot');
+  const cursorRing = document.querySelector('.cursor-ring');
+  let mouseX = 0, mouseY = 0;
+  let prevMouseX = 0, prevMouseY = 0;
+  let dotX = 0, dotY = 0;
+  let ringX = 0, ringY = 0;
+  let trail = [];
+  const trailLength = 10;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (Math.abs(mouseX - prevMouseX) > 1 || Math.abs(mouseY - prevMouseY) > 1) {
+      trail.unshift({x: mouseX, y: mouseY});
+      if (trail.length > trailLength) trail.pop();
+      createSparkle();
+      createSparkle();
+      createSparkle();
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+    }
+  });
+
+  function updateCursor() {
+    dotX += (mouseX - dotX) * 0.2;
+    dotY += (mouseY - dotY) * 0.2;
+    ringX += (mouseX - ringX) * 0.1;
+    ringY += (mouseY - ringY) * 0.1;
+    cursorDot.style.transform = `translate(${dotX}px, ${dotY}px)`;
+    cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    requestAnimationFrame(updateCursor);
+  }
+  updateCursor();
+
+  // Cursor hover effects
+  const interactiveElements = document.querySelectorAll('a, button, .reel-frame, .work-item, .service-card, .stat-card, .testimonial, .contact-item, .form-field input, .form-field textarea, .form-field select');
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursorRing.classList.add('hover');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursorRing.classList.remove('hover');
+    });
+  });
+
+  // Sparkles
+  const sparkles = document.querySelectorAll('.sparkle');
+  let sparkleIndex = 0;
+
+  function createSparkle() {
+    if (trail.length > 1) {
+      const pos = trail[Math.floor(Math.random() * (trail.length - 1)) + 1]; // random from trail except current
+      const sparkle = sparkles[sparkleIndex];
+      const offsetX = (Math.random() - 0.5) * 20;
+      const offsetY = (Math.random() - 0.5) * 20;
+      sparkle.style.left = `${pos.x + offsetX}px`;
+      sparkle.style.top = `${pos.y + offsetY}px`;
+      sparkle.style.animation = 'none';
+      sparkle.offsetHeight; // trigger reflow
+      sparkle.style.animation = 'sparkle 0.4s ease-out forwards';
+      sparkleIndex = (sparkleIndex + 1) % sparkles.length;
+    }
+  }
 </script>
 </body>
 </html>
