@@ -824,8 +824,9 @@ footer {
   let dotX = 0, dotY = 0;
   let ringX = 0, ringY = 0;
   let trail = [];
-  const trailLength = 10;
+  const trailLength = 15;
   const isTouchDevice = 'ontouchstart' in window;
+  let lastSparkleTime = 0;
 
   if (isTouchDevice) {
     cursor.style.display = 'none';
@@ -860,10 +861,14 @@ footer {
     const touch = e.touches[0];
     mouseX = touch.clientX;
     mouseY = touch.clientY;
-    trail.unshift({x: mouseX, y: mouseY});
-    if (trail.length > trailLength) trail.pop();
-    createSparkle();
-    createSparkle();
+    const now = Date.now();
+    if (now - lastSparkleTime > 50) { // throttle to every 50ms
+      trail.unshift({x: mouseX, y: mouseY});
+      if (trail.length > trailLength) trail.pop();
+      createSparkle();
+      createSparkle();
+      lastSparkleTime = now;
+    }
   });
 
   document.addEventListener('touchend', (e) => {
